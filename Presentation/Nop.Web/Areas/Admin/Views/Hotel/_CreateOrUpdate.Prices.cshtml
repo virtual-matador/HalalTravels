@@ -1,0 +1,72 @@
+﻿@model Nop.Web.Areas.Admin.Models.Hotels.HotelModel
+
+@using Nop.Core.Domain.Hotels
+@using Nop.Services
+@using Nop.Services.Stores
+@using Nop.Web.Areas.Admin.Models.Hotels
+
+@{
+    //var stores = storeService.GetAllStores();
+
+    //resources for hotel tags input
+    Html.AppendCssFileParts("~/lib/tagEditor/jquery.tag-editor.css");
+    Html.AppendScriptParts("~/lib/tagEditor/jquery.tag-editor.min.js");
+    Html.AppendScriptParts("~/lib/tagEditor/jquery.caret.min.js");
+}
+
+<div class="panel-body">
+    <div class="form-group">
+        <div class="col-md-3">
+            <nop-label asp-for="DefaultCurrencyId" />
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="DefaultCurrencyId" asp-items="Model.AvailableCurrencies" />
+            <span asp-validation-for="DefaultCurrencyId"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-3">
+            <nop-label asp-for="PricingModelId" />
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="PricingModelId" asp-items="Model.AvailablePricingModels" />
+            <span asp-validation-for="PricingModelId"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-3">
+            <nop-label asp-for="DisableWishlistButton" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="DisableWishlistButton" />
+            <span asp-validation-for="DisableWishlistButton"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-3">
+            <nop-label asp-for="BasepriceEnabled" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="BasepriceEnabled" />
+            <span asp-validation-for="BasepriceEnabled"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-3">
+            <nop-label asp-for="IsTaxExempt" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="IsTaxExempt" />
+            <span asp-validation-for="IsTaxExempt"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-3">
+            <nop-label asp-for="TaxCategoryId" />
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="TaxCategoryId" asp-items="Model.AvailableTaxCategories" />
+            <span asp-validation-for="TaxCategoryId"></span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,85 @@
+﻿@using Nop.Web.Areas.Admin.Models.Hotels
+@model Nop.Web.Areas.Admin.Models.Hotels.HotelModel
+<div class="panel-body">
+    <p>
+        @T(" ")
+    </p>
+    @if (Model.Id > 0)
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+                @await Html.PartialAsync("Table", new DataTablesModel
+                {
+                    Name = "relatedhotels-grid",
+                    UrlRead = new DataUrl("RelatedHotelList", "Hotel", new RouteValueDictionary { [nameof(Model.RelatedHotelSearchModel.HotelId)] = Model.RelatedHotelSearchModel.HotelId }),
+                    UrlDelete = new DataUrl("RelatedHotelDelete", "Hotel", null),
+                    UrlUpdate = new DataUrl("RelatedHotelUpdate", "Hotel", null),
+                    Length = Model.RelatedHotelSearchModel.PageSize,
+                    LengthMenu = Model.RelatedHotelSearchModel.AvailablePageSizes,
+                    ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(RelatedHotelModel.RelatedHotelName))
+                            {
+                                Title = T("Admin.Hotels.Hotel.RelatedHotels.Fields.Hotel").Text
+                            },
+                            new ColumnProperty(nameof(RelatedHotelModel.DisplayOrder))
+                            {
+                                Title = T("Admin.Hotels.Hotel.RelatedHotels.Fields.DisplayOrder").Text,
+                                Width = "150",
+                                ClassName = NopColumnClassDefaults.CenterAll,
+                                Editable = true,
+                                EditType = EditType.Number
+                            },
+                            new ColumnProperty(nameof(RelatedHotelModel.RelatedHotelId))
+                            {
+                                Title = T("Admin.Common.View").Text,
+                                Width = "150",
+                                ClassName = NopColumnClassDefaults.Button,
+                                Render = new RenderButtonView(new DataUrl("~/Admin/Hotel/Edit/", nameof(RelatedHotelModel.RelatedHotelName)))
+                            },
+                            new ColumnProperty(nameof(RelatedHotelModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "200",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonsInlineEdit()
+                            },
+                            new ColumnProperty(nameof(RelatedHotelModel.Id))
+                            {
+                                Title = T("Admin.Common.Delete").Text,
+                                Width = "100",
+                                Render = new RenderButtonRemove(T("Admin.Common.Delete").Text),
+                                ClassName = NopColumnClassDefaults.Button
+                            }
+                        }
+                })
+            </div>
+            <div class="panel-footer">
+                <button type="submit" id="btnAddNewRelatedHotel" class="btn btn-primary" onclick="javascript:OpenWindow('@(Url.Action("RelatedHotelAddPopup", "Hotel", new {hotelId = Model.Id, btnId = "btnRefreshRelatedHotels", formId = "hotel-form"}))', 800, 800, true); return false;">
+                    @T("Admin.Hotels.Hotel.RelatedHotels.AddNew")
+                </button>
+                <input type="submit" id="btnRefreshRelatedHotels" style="display: none" />
+                <script>
+                    $(document).ready(function () {
+                        $('#btnRefreshRelatedHotels').click(function () {
+                            //refresh grid
+                            updateTable('#relatedhotels-grid');
+
+                            //return false to don't reload a page
+                            return false;
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @T("Admin.Hotels.Hotel.RelatedHotels.SaveBeforeEdit")
+            </div>
+        </div>
+    }
+</div>

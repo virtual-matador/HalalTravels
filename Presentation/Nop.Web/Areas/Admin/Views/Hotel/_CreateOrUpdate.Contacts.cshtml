@@ -1,0 +1,96 @@
+﻿@using Nop.Web.Areas.Admin.Models.Hotels
+@model Nop.Web.Areas.Admin.Models.Hotels.HotelModel
+
+@if (Model.Id > 0)
+{
+    <div class="panel-body">
+        @await Html.PartialAsync("Table", new DataTablesModel
+        {
+            Name = "hotelcontact-grid",
+            UrlRead = new DataUrl("HotelContactList", "Hotel", new RouteValueDictionary { [nameof(HotelContactSearchModel.HotelId)] = Model.HotelContactSearchModel.HotelId }),
+            UrlDelete = new DataUrl("HotelContactDelete", "Hotel", null),
+            Length = Model.HotelContactSearchModel.PageSize,
+            LengthMenu = Model.HotelContactSearchModel.AvailablePageSizes,
+            ColumnCollection = new List<ColumnProperty>
+            {
+                new ColumnProperty(nameof(HotelContactModel.Name))
+                {
+                    Title = T("Admin.Hotels.Hotel.Contact.Fields.Name").Text
+                },
+                new ColumnProperty(nameof(HotelContactModel.Surename))
+                {
+                    Title = T("Admin.Hotels.Hotel.Contact.Fields.Surename").Text
+                },
+                new ColumnProperty(nameof(HotelContactModel.DepartmentName))
+                {
+                    Title = T("Admin.Hotels.Hotel.Contact.Fields.DepartmentName").Text
+                },
+                new ColumnProperty(nameof(HotelContactModel.Email))
+                {
+                    Title = T("Admin.Hotels.Hotel.Contact.Fields.Email").Text
+                },
+                new ColumnProperty(nameof(HotelContactModel.MobileNo))
+                {
+                    Title = T("Admin.Hotels.Hotel.Contact.Fields.MobileNo").Text
+                },
+                new ColumnProperty(nameof(HotelContactModel.OfficePhones))
+                {
+                    Title = T("Admin.Hotels.Hotel.Contact.Fields.OfficePhones").Text
+                },
+                new ColumnProperty(nameof(HotelContactModel.IsDefault))
+                {
+                    Title = T("Admin.Hotels.Hotel.Contact.Fields.IsDefault").Text,
+                    Width = "60",
+                    ClassName = NopColumnClassDefaults.CenterAll,
+                    Render = new RenderBoolean()
+                },
+                new ColumnProperty(nameof(HotelContactModel.Id))
+                {
+                    Title = T("Admin.Common.Edit").Text,
+                    Width = "60",
+                    ClassName = NopColumnClassDefaults.Button,
+                    Render = new RenderCustom("renderColumnEdit")
+                },
+                new ColumnProperty(nameof(HotelContactModel.Id))
+                {
+                    Title = T("Admin.Common.Delete").Text,
+                    Width = "60",
+                    Render = new RenderButtonRemove(T("Admin.Common.Delete").Text),
+                    ClassName = NopColumnClassDefaults.Button
+                }
+            }
+       })
+    </div>
+
+    <div class="panel-footer">
+        <button type="submit" id="btnAddNewValue"
+                onclick="javascript:OpenWindow('@Url.Action("HotelContactCreatePopup", "Hotel", new { hotelId = Model.Id, btnId = "btnRefresh", formId = "hotelcontact-form" })', 900, 650, true); return false;"
+                class="btn btn-primary">
+            @T("Admin.Hotels.Hotel.Contact.AddNew")
+        </button>
+        <input type="submit" id="btnRefresh" style="display: none" />
+        <script>
+            $(document).ready(function () {
+                $('#btnRefresh').click(function () {
+                    //refresh grid
+                    updateTable('#hotelcontact-grid');
+
+                    //return false to don't reload a page
+                    return false;
+                });
+            });
+        </script>
+    </div>
+}           
+else
+{
+    <div class="panel-body">
+        @T("Admin.Hotels.Hotel.Contact.SaveBeforeEdit")
+    </div>
+}
+
+<script>
+    function renderColumnEdit(data, type, row, meta) {
+        return '<button onclick=\"javascript:OpenWindow(\'@Url.Content("~/Admin/Hotel/HotelContactEditPopup/")' + data + '?btnId=btnRefresh&formId=hotelcontact-form\', 900, 650, true); return false;\" class="btn btn-default"><i class="fa fa-pencil"></i>@T("Admin.Common.Edit").Text</button>';
+    }
+</script>

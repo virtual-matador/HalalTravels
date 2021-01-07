@@ -1,0 +1,64 @@
+﻿@model Nop.Web.Areas.Admin.Models.Hotels.HotelModel
+
+@{
+    const string hideInfoBlockAttributeName = "HotelPage.HideInfoBlock";
+    var hideInfoBlock = genericAttributeService.GetAttribute<bool>(workContext.CurrentCustomer, hideInfoBlockAttributeName);
+    
+    const string hideAddressBlockAttributeName = "HotelPage.HideAddressBlock";
+    var hideAddressBlock = genericAttributeService.GetAttribute<bool>(workContext.CurrentCustomer, hideAddressBlockAttributeName);
+    
+    const string hidePricesBlockAttributeName = "HotelPage.HidePricesBlock";
+    var hidePricesBlock = genericAttributeService.GetAttribute<bool>(workContext.CurrentCustomer, hidePricesBlockAttributeName);
+    
+    const string hideContractBlockAttributeName = "HotelPage.HideContractBlock";
+    var hideContractBlock = genericAttributeService.GetAttribute<bool>(workContext.CurrentCustomer, hideContractBlockAttributeName);
+
+    const string hidePicturesBlockAttributeName = "HotelPage.HidePicturesBlock";
+    var hidePicturesBlock = genericAttributeService.GetAttribute<bool>(workContext.CurrentCustomer, hidePicturesBlockAttributeName, defaultValue: true);
+
+    const string hideSeoBlockAttributeName = "HotelPage.HideSEOBlock";
+    var hideSeoBlock = genericAttributeService.GetAttribute<bool>(workContext.CurrentCustomer, hideSeoBlockAttributeName, defaultValue: true);
+
+    const string hideRelatedHotelsBlockAttributeName = "HotelPage.HideRelatedHotelsBlock";
+    var hideRelatedHotelsBlock = genericAttributeService.GetAttribute<bool>(workContext.CurrentCustomer, hideRelatedHotelsBlockAttributeName, defaultValue: true);
+    
+    const string hideAccountingBlockAttributeName = "HotelPage.HideAccountingBlock";
+    var hideAccountingBlock = genericAttributeService.GetAttribute<bool>(workContext.CurrentCustomer, hideAccountingBlockAttributeName, defaultValue: true);
+    
+    const string hideCheckInAndOutPolicyBlockAttributeName = "HotelPage.HideCheckInAndOutPolicyBlock";
+    var hideCheckInAndOutPolicyBlock = genericAttributeService.GetAttribute<bool>(workContext.CurrentCustomer, hideCheckInAndOutPolicyBlockAttributeName, defaultValue: true);
+    
+    const string hideContactBlockAttributeName = "HotelPage.HideContactBlock";
+    var hideContactBlock = genericAttributeService.GetAttribute<bool>(workContext.CurrentCustomer, hideContactBlockAttributeName, defaultValue: true);
+
+}
+
+<div asp-validation-summary="All"></div>
+<input asp-for="Id" type="hidden" />
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="row">
+            <div class="col-md-12 clearfix">
+                <div class="pull-left">
+                    @await Component.InvokeAsync("SettingMode", new { modeName = "hotel-advanced-mode" })
+                </div>
+            </div>
+        </div>
+
+        <nop-panels id="hotel-panels">
+            <nop-panel asp-name="hotel-info" asp-icon="fa fa-info" asp-title="@T("Admin.Hotels.Hotels.Info")" asp-hide-block-attribute-name="@hideInfoBlockAttributeName" asp-hide="@hideInfoBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.Info", Model)</nop-panel>
+            <nop-panel asp-name="hotel-address" asp-icon="fa fa-info" asp-title="@T("Admin.Hotels.Hotels.Address")" asp-hide-block-attribute-name="@hideAddressBlockAttributeName" asp-hide="@hideAddressBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.Address", Model)</nop-panel>
+            <nop-panel asp-name="hotel-prices" asp-icon="fa fa-info" asp-title="@T("Admin.Hotels.Hotels.Prices")" asp-hide-block-attribute-name="@hidePricesBlockAttributeName" asp-hide="@hidePricesBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.Prices", Model)</nop-panel>
+            <nop-panel asp-name="hotel-contract" asp-icon="fa fa-info" asp-title="@T("Admin.Hotels.Hotels.Contract")" asp-hide-block-attribute-name="@hideContractBlockAttributeName" asp-hide="@hideContractBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.Contract", Model)</nop-panel>
+            <nop-panel asp-name="hotel-contact" asp-icon="fa fa-info" asp-title="@T("Admin.Hotels.Hotels.Contact")" asp-hide-block-attribute-name="@hideContactBlockAttributeName" asp-hide="@hideContactBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.Contacts", Model)</nop-panel>
+            <nop-panel asp-name="hotel-accounting" asp-icon="fa fa-info" asp-title="@T("Admin.Hotels.Hotels.Accounting")" asp-hide-block-attribute-name="@hideAccountingBlockAttributeName" asp-hide="@hideAccountingBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.Accounting", Model)</nop-panel>
+            <nop-panel asp-name="hotel-checkinandoutpolicy" asp-icon="fa fa-info" asp-title="@T("Admin.Hotels.Hotels.CheckInAndOutPolicy")" asp-hide-block-attribute-name="@hideCheckInAndOutPolicyBlockAttributeName" asp-hide="@hideCheckInAndOutPolicyBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.CheckInAndOutPolicy", Model)</nop-panel>
+            <nop-panel asp-name="hotel-pictures" asp-icon="fa fa-picture-o" asp-title="@T("Admin.Hotels.Hotels.Pictures")" asp-hide-block-attribute-name="@hidePicturesBlockAttributeName" asp-hide="@hidePicturesBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.Pictures", Model)</nop-panel>
+            <nop-panel asp-name="hotel-seo" asp-icon="fa fa-search-plus" asp-title="@T("Admin.Common.SEO")" asp-hide-block-attribute-name="@hideSeoBlockAttributeName" asp-hide="@hideSeoBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.Seo", Model)</nop-panel>
+            <nop-panel asp-name="hotel-relatedhotels" asp-icon="fa fa-object-group" asp-title="@T("Admin.Hotels.Hotel.RelatedHotels")" asp-hide-block-attribute-name="@hideRelatedHotelsBlockAttributeName" asp-hide="@hideRelatedHotelsBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.RelatedHotels", Model)</nop-panel>
+
+            @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.HotelDetailsBlock, additionalData = Model })
+        </nop-panels>
+    </div>
+</div>

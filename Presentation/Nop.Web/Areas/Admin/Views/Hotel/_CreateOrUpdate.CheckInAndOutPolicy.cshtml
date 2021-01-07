@@ -1,0 +1,52 @@
+﻿@model Nop.Web.Areas.Admin.Models.Hotels.HotelModel
+
+@using Nop.Core.Domain.Hotels
+@using Nop.Services
+@using Nop.Services.Stores
+@using Nop.Web.Areas.Admin.Models.Hotels
+
+<div class="panel-body">
+    @(Html.LocalizedEditor<HotelModel, HotelLocalizedModel>("hotel-checkinandout-localized",
+        @<div>
+            <div class="form-group">
+               <div class="col-md-3">
+                   <nop-label asp-for="@Model.Locales[item].CheckInAndOutPolicy" />
+               </div>
+               <div class="col-md-9">
+                   <nop-editor asp-for="@Model.Locales[item].CheckInAndOutPolicy"/>
+                   <span asp-validation-for="@Model.Locales[item].CheckInAndOutPolicy"></span>
+               </div>
+            </div>
+            <input type="hidden" asp-for="@Model.Locales[item].LanguageId" />
+        </div>
+        ,
+        @<div>
+            <div class="form-group">
+               <div class="col-md-3">
+                   <nop-label asp-for="CheckInAndOutPolicy" />
+               </div>
+               <div class="col-md-9">
+                   <nop-editor asp-for="CheckInAndOutPolicy" />
+                   <span asp-validation-for="CheckInAndOutPolicy"></span>
+               </div>
+            </div>
+        </div>))
+    <div class="form-group">
+        <div class="col-md-3">
+            <nop-label asp-for="CheckInTime"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="CheckInTime"/>
+            <span asp-validation-for="CheckInTime"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-3">
+            <nop-label asp-for="CheckOutTime"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="CheckOutTime"/>
+            <span asp-validation-for="CheckOutTime"></span>
+        </div>
+    </div>
+</div>

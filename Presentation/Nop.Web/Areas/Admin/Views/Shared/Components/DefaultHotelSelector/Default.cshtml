@@ -1,0 +1,20 @@
+﻿@model Nop.Web.Areas.Admin.Models.Hotels.HotelSelectorModel
+
+@inject Nop.Core.IWebHelper webHelper
+
+@if (Model.AvailableHotels.Count > 1)
+{
+    <div style="padding: 7px 12px 0 12px;">
+        @{
+            var returnUrl = webHelper.GetRawUrl(Context.Request);
+            var hotels = Model.AvailableHotels.Select(hotel => new SelectListItem
+            {
+                Text = hotel.Name,
+                Value = Url.Action("SetDefaultHotel", "Hotel", new {hotelId = hotel.Id, area = AreaNames.Admin, returnUrl }, webHelper.CurrentRequestProtocol),
+                Selected = hotel.Id.Equals(Model.CurrentHotel?.Id ?? 0)
+            });
+
+            <nop-select asp-for-name="defaulthotel" asp-items="@hotels" onchange="setLocation(this.value);" />
+        }
+    </div>
+}

@@ -1,0 +1,27 @@
+@model Nop.Web.Areas.Admin.Models.Hotels.HotelContactModel
+
+@{
+    Layout = "_AdminPopupLayout";
+
+    //page title
+    ViewBag.PageTitle = T("Admin.Hotels.Hotel.Contact.AddNew").Text;
+}
+
+<form asp-controller="Hotel" asp-action="HotelContactCreatePopup"
+      asp-route-checkoutAttributeId="@Context.Request.Query["hotelId"]"
+      asp-route-btnId="@Context.Request.Query["btnId"]"
+      asp-route-formId="@Context.Request.Query["formId"]">
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Admin.Hotels.Hotel.Contact.AddNew")
+        </h1>
+        <div class="pull-right">
+            <button type="submit" name="save" class="btn bg-blue">
+                <i class="fa fa-floppy-o"></i>
+                @T("Admin.Common.Save")
+            </button>
+            @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.HotelContactDetailsButtons })
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdateContact", Model)
+</form>

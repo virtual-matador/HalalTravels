@@ -1,0 +1,140 @@
+@using Nop.Web.Areas.Admin.Models.Hotels
+@model Nop.Web.Areas.Admin.Models.Hotels.HotelContactModel
+
+@{
+    Html.AddScriptParts("~/lib/farbtastic/farbtastic.js");
+    Html.AddCssFileParts("~/lib/farbtastic/farbtastic.css");
+}
+
+<div asp-validation-summary="All"></div>
+<input asp-for="Id" type="hidden" />
+<input asp-for="HotelId" type="hidden" />
+
+@if (ViewBag.RefreshPage == true)
+{
+    <script>
+        try {window.opener.document.forms['@(Context.Request.Query["formId"])'].@(Context.Request.Query["btnId"]).click();}
+        catch (e){}
+        window.close();
+    </script>
+}
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.HotelContactDetailsTop, additionalData = Model })
+            <div class="panel panel-default panel-popup">
+                <div class="panel-body">
+                    @(Html.LocalizedEditor<HotelContactModel, HotelContactLocalizedModel>("hotelcontact-localized",
+                    @<div>
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <nop-label asp-for="@Model.Locales[item].Name"/>
+                            </div>
+                            <div class="col-sm-9">
+                                <nop-editor asp-for="@Model.Locales[item].Name"/>
+                                <span asp-validation-for="@Model.Locales[item].Name"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <nop-label asp-for="@Model.Locales[item].Surename"/>
+                            </div>
+                            <div class="col-sm-9">
+                                <nop-editor asp-for="@Model.Locales[item].Surename"/>
+                                <span asp-validation-for="@Model.Locales[item].Surename"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <nop-label asp-for="@Model.Locales[item].Position"/>
+                            </div>
+                            <div class="col-sm-9">
+                                <nop-editor asp-for="@Model.Locales[item].Position"/>
+                                <span asp-validation-for="@Model.Locales[item].Position"></span>
+                            </div>
+                        </div>
+                         <input type="hidden" asp-for="@Model.Locales[item].LanguageId" />
+                    </div>
+    ,
+                    @<div>
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <nop-label asp-for="Name"/>
+                            </div>
+                            <div class="col-sm-9">
+                                <nop-editor asp-for="Name" asp-required="true"/>
+                                <span asp-validation-for="Name"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <nop-label asp-for="Surename"/>
+                            </div>
+                            <div class="col-sm-9">
+                                <nop-editor asp-for="Surename" asp-required="true"/>
+                                <span asp-validation-for="Surename"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <nop-label asp-for="Position"/>
+                            </div>
+                            <div class="col-sm-9">
+                                <nop-editor asp-for="Position" asp-required="true"/>
+                                <span asp-validation-for="Position"></span>
+                            </div>
+                        </div>
+                    </div>
+    ))
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <nop-label asp-for="DepartmentId" />
+                        </div>
+                        <div class="col-md-9">
+                            <nop-select asp-for="DepartmentId" asp-items="Model.AvailableDepartments" />
+                            <span asp-validation-for="DepartmentId"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <nop-label asp-for="Email"/>
+                        </div>
+                        <div class="col-sm-9">
+                            <nop-editor asp-for="Email" />
+                            <span asp-validation-for="Email"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <nop-label asp-for="MobileNo"/>
+                        </div>
+                        <div class="col-sm-9">
+                            <nop-editor asp-for="MobileNo" />
+                            <span asp-validation-for="MobileNo"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <nop-label asp-for="OfficePhones"/>
+                        </div>
+                        <div class="col-sm-9">
+                            <nop-editor asp-for="OfficePhones" />
+                            <span asp-validation-for="OfficePhones"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-3">
+                            <nop-label asp-for="IsDefault"/>
+                        </div>
+                        <div class="col-sm-9">
+                            <nop-editor asp-for="IsDefault" />
+                            <span asp-validation-for="IsDefault"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.HotelContactDetailsBottom, additionalData = Model })
+        </div>
+    </div>
+</div>

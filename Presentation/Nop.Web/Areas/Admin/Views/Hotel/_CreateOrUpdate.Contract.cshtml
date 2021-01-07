@@ -1,0 +1,212 @@
+﻿@model Nop.Web.Areas.Admin.Models.Hotels.HotelModel
+
+@using Nop.Core.Domain.Hotels
+@using Nop.Services
+@using Nop.Services.Stores
+@using Nop.Web.Areas.Admin.Models.Hotels
+
+@{
+    //var stores = storeService.GetAllStores();
+
+    //resources for hotel tags input
+    Html.AppendCssFileParts("~/lib/tagEditor/jquery.tag-editor.css");
+    Html.AppendScriptParts("~/lib/tagEditor/jquery.tag-editor.min.js");
+    Html.AppendScriptParts("~/lib/tagEditor/jquery.caret.min.js");
+}
+
+<div class="panel-body">
+    <div class="form-group">
+        <div class="col-md-3">
+            <nop-label asp-for="ContractTypeId" />
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="ContractTypeId" asp-items="Model.AvailableContractTypes" />
+            <span asp-validation-for="ContractTypeId"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-3">
+            <nop-label asp-for="Contractor" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Contractor" />
+            <span asp-validation-for="Contractor"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-3">
+            <nop-label asp-for="ContractStartDateTimeUtc" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="ContractStartDateTimeUtc" />
+            <span asp-validation-for="ContractStartDateTimeUtc"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-3">
+            <nop-label asp-for="ContractEndDateTimeUtc" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="ContractEndDateTimeUtc" />
+            <span asp-validation-for="ContractEndDateTimeUtc"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        @if (Model.Id > 0)
+        {
+            <div class="sub-panel">
+            
+                @await Html.PartialAsync("Table", new DataTablesModel
+                {
+                    Name = "contractdocument-grid",
+                    UrlRead = new DataUrl("ContractDocumentList", "Hotel", new RouteValueDictionary { [nameof(Model.HotelContractDocumentSearchModel.HotelId)] = Model.HotelContractDocumentSearchModel.HotelId }),
+                    UrlDelete = new DataUrl("ContractDocumentDelete", "Hotel", null),
+                    UrlUpdate = new DataUrl("ContractDocumentUpdate", "Hotel", null),
+                    Length = Model.HotelContractDocumentSearchModel.PageSize,
+                    LengthMenu = Model.HotelContractDocumentSearchModel.AvailablePageSizes,
+                    ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(HotelContractDocumentModel.OverrideTitleAttribute))
+                            {
+                                Title = T("Admin.Hotels.Hotel.ContractDocument.Fields.OverrideTitleAttribute").Text,
+                                Width = "200",
+                                Editable = true,
+                                EditType = EditType.String
+                            },
+                            new ColumnProperty(nameof(HotelContractDocumentModel.OverrideAltAttribute))
+                            {
+                                Title = T("Admin.Hotels.Hotel.ContractDocument.Fields.OverrideAltAttribute").Text,
+                                Width = "200",
+                                Editable = true,
+                                EditType = EditType.String
+                            },
+                            new ColumnProperty(nameof(HotelContractDocumentModel.DisplayOrder))
+                            {
+                                Title = T("Admin.Hotels.Hotel.ContractDocument.Fields.DisplayOrder").Text,
+                                Width = "150",
+                                ClassName = NopColumnClassDefaults.CenterAll,
+                                Editable = true,
+                                EditType = EditType.Number
+                            },
+                            new ColumnProperty(nameof(HotelContractDocumentModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "60",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonsInlineEdit()
+                            },
+                            new ColumnProperty(nameof(HotelContractDocumentModel.Id))
+                            {
+                                Title = T("Admin.Common.Delete").Text,
+                                Width = "60",
+                                Render = new RenderButtonRemove(T("Admin.Common.Delete").Text),
+                                ClassName = NopColumnClassDefaults.Button
+                            }
+                        }
+                })
+            </div>
+        
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        @T("Admin.Hotels.Hotel.ContractDocument.AddNew")
+                    </div>
+                    <div class="panel-body">
+                        <script>
+                            $(document).ready(function() {
+                                $('#addHotelContractDocument').click(function() {
+                                    var documentId = $("#@Html.IdFor(model => model.AddHotelContractDocumentModel.DocumentId)").val();
+                                    var overrideAltAttribute = $("#@Html.IdFor(model => model.AddHotelContractDocumentModel.OverrideAltAttribute)").val();
+                                    var overrideTitleAttribute = $("#@Html.IdFor(model => model.AddHotelContractDocumentModel.OverrideTitleAttribute)").val();
+                                    var displayOrder = $("#@Html.IdFor(model => model.AddHotelContractDocumentModel.DisplayOrder)").val();
+        
+                                    if (documentId == 0) {
+                                        $("#addHotelContractDocumentAlert").click();
+                                        return;
+                                    }
+        
+                                    $('#addHotelContractDocument').attr('disabled', true);
+        
+                                    var postData = {
+                                        documentId: documentId,
+                                        displayOrder: displayOrder,
+                                        overrideAltAttribute: overrideAltAttribute,
+                                        overrideTitleAttribute: overrideTitleAttribute,
+                                        hotelId: '@Model.Id'
+                                    };
+                                    addAntiForgeryToken(postData);
+        
+                                    $.ajax({
+                                        cache: false,
+                                        type: "POST",
+                                        url: "@(Url.Action("ContractDocumentAdd", "Hotel"))",
+                                        data: postData,
+                                        success: function (data, textStatus, jqXHR) {
+                                            if (!data.Result) {
+                                                return;
+                                            }                                        
+                                            updateTable('#contractdocument-grid');
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            $("#hotelContractDocumentAddAlert").click();
+                                        },
+                                        complete: function (jqXHR, textStatus) {
+                                            $('#addHotelContractDocument').attr('disabled', false);
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <nop-label asp-for="AddHotelContractDocumentModel.DocumentId" />
+                            </div>
+                            <div class="col-md-9">
+                                <nop-editor asp-for="AddHotelContractDocumentModel.DocumentId" />
+                                <span asp-validation-for="AddHotelContractDocumentModel.DocumentId"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <nop-label asp-for="AddHotelContractDocumentModel.OverrideAltAttribute" />
+                            </div>
+                            <div class="col-md-9">
+                                <nop-editor asp-for="AddHotelContractDocumentModel.OverrideAltAttribute" />
+                                <span asp-validation-for="AddHotelContractDocumentModel.OverrideAltAttribute"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <nop-label asp-for="AddHotelContractDocumentModel.OverrideTitleAttribute" />
+                            </div>
+                            <div class="col-md-9">
+                                <nop-editor asp-for="AddHotelContractDocumentModel.OverrideTitleAttribute" />
+                                <span asp-validation-for="AddHotelContractDocumentModel.OverrideTitleAttribute"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <nop-label asp-for="AddHotelContractDocumentModel.DisplayOrder" />
+                            </div>
+                            <div class="col-md-9">
+                                <nop-editor asp-for="AddHotelContractDocumentModel.DisplayOrder" />
+                                <span asp-validation-for="AddHotelContractDocumentModel.DisplayOrder"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-9 col-md-offset-3">
+                                <button type="button" id="addHotelContractDocument" class="btn btn-primary">@T("Admin.Hotels.Hotel.ContractDocument.AddButton")</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        @T("Admin.Hotels.Hotel.ContractDocument.SaveBeforeEdit")
+                    </div>
+                </div>
+            }
+    </div>
+</div>

@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>Nop.Data</RootNamespace>
+    <AssemblyName>Nop.HalalTravels.Data</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentMigrator" Version="3.2.6" />
+    <PackageReference Include="FluentMigrator.Runner" Version="3.2.6" />
+    <PackageReference Include="linq2db" Version="2.9.8" />
+    <PackageReference Include="MySql.Data" Version="8.0.20" />
+    <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\Nop.Core\Nop.Core.csproj" />
+    <ProjectReference Include="..\..\Libraries\Nop.Data\Nop.Data.csproj" />
+    <ProjectReference Include="..\Nop.HalalTravels.Core\Nop.HalalTravels.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Mapping\Builders\Discounts\" />
+  </ItemGroup>
+
+</Project>

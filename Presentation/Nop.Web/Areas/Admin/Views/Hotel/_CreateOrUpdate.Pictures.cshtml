@@ -1,0 +1,174 @@
+@using Nop.Web.Areas.Admin.Models.Hotels
+@model Nop.Web.Areas.Admin.Models.Hotels.HotelModel
+
+<div class="panel-body">
+    @if (Model.Id > 0)
+    {
+    <div class="sub-panel">
+
+        @await Html.PartialAsync("Table", new DataTablesModel
+        {
+            Name = "hotelpictures-grid",
+            UrlRead = new DataUrl("HotelPictureList", "Hotel", new RouteValueDictionary { [nameof(Model.HotelPictureSearchModel.HotelId)] = Model.HotelPictureSearchModel.HotelId }),
+            UrlDelete = new DataUrl("HotelPictureDelete", "Hotel", null),
+            UrlUpdate = new DataUrl("HotelPictureUpdate", "Hotel", null),
+            Length = Model.HotelPictureSearchModel.PageSize,
+            LengthMenu = Model.HotelPictureSearchModel.AvailablePageSizes,
+            ColumnCollection = new List<ColumnProperty>
+                {
+                    new ColumnProperty(nameof(HotelPictureModel.PictureUrl))
+                    {
+                        Title = T("Admin.Hotels.Hotels.Pictures.Fields.Picture").Text,
+                        Render = new RenderCustom("renderPicturesColumnHotelPictureUrl")
+                    },
+                    new ColumnProperty(nameof(HotelPictureModel.DisplayOrder))
+                    {
+                        Title = T("Admin.Hotels.Hotels.Pictures.Fields.DisplayOrder").Text,
+                        Width = "150",
+                        ClassName = NopColumnClassDefaults.CenterAll,
+                        Editable = true,
+                        EditType = EditType.Number
+                    },
+                    new ColumnProperty(nameof(HotelPictureModel.OverrideAltAttribute))
+                    {
+                        Title = T("Admin.Hotels.Hotels.Pictures.Fields.OverrideAltAttribute").Text,
+                        Width = "200",
+                        Editable = true,
+                        EditType = EditType.String
+                    },
+                    new ColumnProperty(nameof(HotelPictureModel.OverrideTitleAttribute))
+                    {
+                        Title = T("Admin.Hotels.Hotels.Pictures.Fields.OverrideTitleAttribute").Text,
+                        Width = "200",
+                        Editable = true,
+                        EditType = EditType.String
+                    },
+                    new ColumnProperty(nameof(HotelPictureModel.Id))
+                    {
+                        Title = T("Admin.Common.Edit").Text,
+                        Width = "200",
+                        ClassName =  NopColumnClassDefaults.Button,
+                        Render = new RenderButtonsInlineEdit()
+                    },
+                    new ColumnProperty(nameof(HotelPictureModel.Id))
+                    {
+                        Title = T("Admin.Common.Delete").Text,
+                        Width = "100",
+                        Render = new RenderButtonRemove(T("Admin.Common.Delete").Text),
+                        ClassName = NopColumnClassDefaults.Button
+                    }
+                }
+        })
+        
+        <script>
+            function renderPicturesColumnHotelPictureUrl(data, type, row, meta) {
+                return '<a href="' + row.PictureUrl + '" target="_blank"><img alt="' + row.PictureId + '" src="' + row.PictureUrl + '" width="150" /></a>';
+            }
+        </script>
+    </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @T("Admin.Hotels.Hotels.Pictures.AddNew")
+            </div>
+            <div class="panel-body">
+                <script>
+                    $(document).ready(function() {
+                        $('#addHotelPicture').click(function() {
+                            var pictureId = $("#@Html.IdFor(model => model.AddPictureModel.PictureId)").val();
+                            var overrideAltAttribute = $("#@Html.IdFor(model => model.AddPictureModel.OverrideAltAttribute)").val();
+                            var overrideTitleAttribute = $("#@Html.IdFor(model => model.AddPictureModel.OverrideTitleAttribute)").val();
+                            var displayOrder = $("#@Html.IdFor(model => model.AddPictureModel.DisplayOrder)").val();
+
+                            if (pictureId == 0) {
+                                $("#addHotelPictureAlert").click();
+                                return;
+                            }
+
+                            $('#addHotelPicture').attr('disabled', true);
+
+                            var postData = {
+                                pictureId: pictureId,
+                                displayOrder: displayOrder,
+                                overrideAltAttribute: overrideAltAttribute,
+                                overrideTitleAttribute: overrideTitleAttribute,
+                                hotelId: '@Model.Id'
+                            };
+                            addAntiForgeryToken(postData);
+
+                            $.ajax({
+                                cache: false,
+                                type: "POST",
+                                url: "@(Url.Action("HotelPictureAdd", "Hotel"))",
+                                data: postData,
+                                success: function (data, textStatus, jqXHR) {
+                                    if (!data.Result) {
+                                        return;
+                                    }                                        
+                                    updateTable('#hotelpictures-grid');
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    $("#hotelPictureAddAlert").click();
+                                },
+                                complete: function (jqXHR, textStatus) {
+                                    $('#addHotelPicture').attr('disabled', false);
+                                }
+                            });
+                        });
+                    });
+                </script>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-label asp-for="AddPictureModel.PictureId" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="AddPictureModel.PictureId" />
+                        <span asp-validation-for="AddPictureModel.PictureId"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-label asp-for="AddPictureModel.OverrideAltAttribute" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="AddPictureModel.OverrideAltAttribute" />
+                        <span asp-validation-for="AddPictureModel.OverrideAltAttribute"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-label asp-for="AddPictureModel.OverrideTitleAttribute" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="AddPictureModel.OverrideTitleAttribute" />
+                        <span asp-validation-for="AddPictureModel.OverrideTitleAttribute"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-label asp-for="AddPictureModel.DisplayOrder" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="AddPictureModel.DisplayOrder" />
+                        <span asp-validation-for="AddPictureModel.DisplayOrder"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3">
+                        <button type="button" id="addHotelPicture" class="btn btn-primary">@T("Admin.Hotels.Hotels.Pictures.AddButton")</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @T("Admin.Hotels.Hotels.Pictures.SaveBeforeEdit")
+            </div>
+        </div>
+    }
+</div>
+<nop-alert asp-alert-id="addHotelPictureAlert" asp-alert-message="@T("Admin.Hotels.Hotels.Pictures.Alert.AddNew")" />
+<nop-alert asp-alert-id="hotelPictureAddAlert" asp-alert-message="@T("Admin.Hotels.Hotels.Pictures.Alert.PictureAdd")" />

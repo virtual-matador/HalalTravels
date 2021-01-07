@@ -1,0 +1,335 @@
+﻿@model Nop.Web.Areas.Admin.Models.Hotels.HotelSearchModel
+
+@using Nop.Core.Domain.Hotels;
+@using Nop.Web.Areas.Admin.Factories
+@using Nop.Web.Areas.Admin.Models.Hotels
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Hotels.Hotels").Text;
+    //active menu item (system name)
+    Html.SetActiveMenuItemSystemName("Hotels");
+}
+
+@{
+    const string hideSearchBlockAttributeName = "HotelListPage.HideSearchBlock";
+    var hideSearchBlock = genericAttributeService.GetAttribute<bool>(workContext.CurrentCustomer, hideSearchBlockAttributeName);
+}
+
+<form asp-controller="Hotel" asp-action="List" method="post">
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @T("Admin.Hotels.Hotels")
+        </h1>
+        <div class="pull-right">
+            <a asp-action="Create" class="btn bg-blue">
+                <i class="fa fa-plus-square"></i>
+                @T("Admin.Common.AddNew")
+            </a>
+            <!--<button type="button" id="delete-selected" class="btn bg-red">
+                <i class="fa fa-trash-o"></i>
+                @T("Admin.Common.Delete.Selected")
+            </button>
+            <nop-action-confirmation asp-button-id="delete-selected" />-->
+            @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.HotelListButtons })
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default panel-search">
+                    <div class="panel-body">
+                        <div class="row search-row @(!hideSearchBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+                            <div class="search-text">@T("Admin.Common.Search")</div>
+                            <div class="icon-search"><i class="fa fa-search" aria-hidden="true"></i></div>
+                            <div class="icon-collapse"><i class="fa fa-angle-down" aria-hidden="true"></i></div>
+                        </div>
+
+                        <div class="search-body @(hideSearchBlock ? "closed" : "")">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="SearchHotelName" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-editor asp-for="SearchHotelName" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="SearchCategoryId" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-select asp-for="SearchCategoryId" asp-items="Model.AvailableCategoryOptions" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="SearchChainId" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-select asp-for="SearchChainId" asp-items="Model.AvailableChainOptions" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="SearchPublished" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-editor asp-for="SearchPublished" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="SearchHotelTypeId" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-select asp-for="SearchHotelTypeId" asp-items="Model.AvailableHotelTypeOptions" />
+                                        </div>
+                                    </div>
+                                    <!--<div class="form-group">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="SearchPublishedId" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-select asp-for="SearchPublishedId" asp-items="Model.AvailablePublishedOptions" />
+                                        </div>
+                                    </div>-->
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="SearchCountryId" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-select asp-for="SearchCountryId" asp-items="Model.AvailableCountryOptions" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="SearchCountyId" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-select asp-for="SearchCountyId" asp-items="Model.AvailableCountyOptions" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="SearchProvinceId" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-select asp-for="SearchProvinceId" asp-items="Model.AvailableProvinceOptions" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <nop-label asp-for="SearchCityId" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <nop-select asp-for="SearchCityId" asp-items="Model.AvailableCityOptions" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-7 col-md-offset-5">
+                                    <button type="button" id="search-hotels" class="btn btn-primary btn-search">
+                                        <i class="fa fa-search"></i>
+                                        @T("Admin.Common.Search")
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        @await Html.PartialAsync("Table", new DataTablesModel
+                   {
+                       Name = "hotels-grid",
+                       UrlRead = new DataUrl("HotelList", "Hotel", null),
+                       SearchButtonId = "search-hotels",
+                       Length = Model.PageSize,
+                       LengthMenu = Model.AvailablePageSizes,
+                       Filters = new List<FilterParameter>
+                            {
+                                new FilterParameter(nameof(Model.SearchHotelName)),
+                                new FilterParameter(nameof(Model.SearchHotelTypeId)),
+                                new FilterParameter(nameof(Model.SearchChainId)),
+                                new FilterParameter(nameof(Model.SearchCategoryId)),
+                                new FilterParameter(nameof(Model.SearchCountryId)),
+                                new FilterParameter(nameof(Model.SearchProvinceId)),
+                                new FilterParameter(nameof(Model.SearchCityId)),
+                                new FilterParameter(nameof(Model.SearchPublishedId))
+                            },
+                       ColumnCollection = new List<ColumnProperty>
+                            {
+                                new ColumnProperty(nameof(HotelModel.Id))
+                                {
+                                    IsMasterCheckBox = true,
+                                    Render = new RenderCheckBox("checkbox_hotels"),
+                                    ClassName =  NopColumnClassDefaults.CenterAll,
+                                    Width = "50"
+                                },
+                                new ColumnProperty(nameof(HotelModel.PictureThumbnailUrl))
+                                {
+                                    Title = T("Admin.Hotels.Hotel.Fields.PictureThumbnailUrl").Text,
+                                    Width = "80",
+                                    Render = new RenderPicture()
+                                },
+                                new ColumnProperty(nameof(HotelModel.Name))
+                                {
+                                    Title = T("Admin.Hotels.Hotel.Fields.Name").Text
+                                },
+                                new ColumnProperty(nameof(HotelModel.HotelTypeName))
+                                {
+                                    Title = T("Admin.Hotels.Hotel.Fields.HotelTypeName").Text
+                                },
+                                new ColumnProperty(nameof(HotelModel.CountryName))
+                                {
+                                    Title = T("Admin.Hotels.Hotel.Fields.CountryName").Text
+                                },
+                                new ColumnProperty(nameof(HotelModel.ProvinceName))
+                                {
+                                    Title = T("Admin.Hotels.Hotel.Fields.ProvinceName").Text
+                                },
+                                new ColumnProperty(nameof(HotelModel.CountyName))
+                                {
+                                    Title = T("Admin.Hotels.Hotel.Fields.CountyName").Text
+                                },
+                                new ColumnProperty(nameof(HotelModel.Published))
+                                {
+                                    Title = T("Admin.Hotels.Hotel.Fields.Published").Text,
+                                    Width = "60",
+                                    ClassName = NopColumnClassDefaults.CenterAll,
+                                    Render = new RenderBoolean()
+                                },
+                                new ColumnProperty(nameof(HotelModel.Id))
+                                {
+                                    Title = T("Admin.Common.Edit").Text,
+                                    Width = "60",
+                                    ClassName =  NopColumnClassDefaults.Button,
+                                    Render = new RenderButtonEdit(new DataUrl("Edit"))
+                                },
+                                new ColumnProperty(nameof(HotelModel.Id))
+                                {
+                                    Title = T("Admin.Common.Amenities").Text,
+                                    Width = "60",
+                                    ClassName =  NopColumnClassDefaults.Button,
+                                    Render = new RenderButtonEdit(new DataUrl("UpdateAmenities"))
+                                }
+                            }
+                   })
+
+                        <script>
+                            $(document).ready(function () {
+                                /*$('#delete-selected-action-confirmation-submit-button').bind('click', function () {
+                                    var postData = {
+                                        selectedIds: selectedIds
+                                    };
+                                    addAntiForgeryToken(postData);
+                                    $.ajax({
+                                        cache: false,
+                                        url: "@(Url.Action("DeleteSelected", "Hotel"))",
+                                        data: postData,
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            $('#deleteSelectedFailed-info').text(errorThrown);
+                                            $('#deleteSelectedFailed').click();
+                                        },
+                                        complete: function (jqXHR, textStatus) {
+                                            updateTable('#hotels-grid');
+                                        }
+                                    });
+                                    $('#delete-selected-action-confirmation').modal('toggle');
+                                    return false;
+                                });*/
+
+                                $("#@Html.IdFor(model => model.SearchCountryId)").change(function() {
+                                    var selectedItem = $(this).val();
+                                    var ddlProvinces = $("#@Html.IdFor(model => model.SearchProvinceId)");
+                                    $.ajax({
+                                        cache: false,
+                                        type: "GET",
+                                        url: "@(Url.Action("GetProvincesByCountryId", "HotelCountry"))",
+                                        data: {
+                                            "countryId": selectedItem,
+                                            "addAsterisk": "true"
+                                        },
+                                        success: function (data, textStatus, jqXHR) {
+                                            ddlProvinces.html('');
+                                            $.each(data, function(id, option) {
+                                                ddlProvinces.append($('<option></option>').val(option.id).html(option.name));
+                                            });
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            $("#statesAlert").click();
+                                        }
+                                    });
+                                });
+
+                                $("#@Html.IdFor(model => model.SearchProvinceId)").change(function() {
+                                    var selectedItem = $(this).val();
+                                    var ddlCounties = $("#@Html.IdFor(model => model.SearchCountyId)");
+                                    $.ajax({
+                                        cache: false,
+                                        type: "GET",
+                                        url: "@(Url.Action("GetCountiesByProvinceId", "HotelCountry"))",
+                                        data: {
+                                            "provinceId": selectedItem,
+                                            "addAsterisk": "true"
+                                        },
+                                        success: function (data, textStatus, jqXHR) {
+                                            ddlCounties.html('');
+                                            $.each(data, function(id, option) {
+                                                ddlCounties.append($('<option></option>').val(option.id).html(option.name));
+                                            });
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            $("#statesAlert").click();
+                                        }
+                                    });
+                                });
+
+                                $("#@Html.IdFor(model => model.SearchCountyId)").change(function() {
+                                    var selectedItem = $(this).val();
+                                    var ddlCities = $("#@Html.IdFor(model => model.SearchCityId)");
+                                    $.ajax({
+                                        cache: false,
+                                        type: "GET",
+                                        url: "@(Url.Action("GetCitiesByCountyId", "HotelCountry"))",
+                                        data: {
+                                            "countyId": selectedItem,
+                                            "addAsterisk": "true"
+                                        },
+                                        success: function (data, textStatus, jqXHR) {
+                                            ddlCities.html('');
+                                            $.each(data, function(id, option) {
+                                                ddlCities.append($('<option></option>').val(option.id).html(option.name));
+                                            });
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            $("#statesAlert").click();
+                                        }
+                                    });
+                                });
+                            });
+
+                        </script>
+                        <!--<nop-alert asp-alert-id="deleteSelectedFailed" />-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

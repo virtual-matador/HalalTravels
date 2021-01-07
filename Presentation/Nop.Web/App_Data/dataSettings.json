@@ -1,0 +1,6 @@
+﻿{
+  "DataConnectionString": "server=35.204.228.139;database=htotadev;allowuservariables=True;user id=IranTeam;password=A<d)DKzL|6CF",
+  "DataProvider": "mysql",
+  "SQLCommandTimeout": null,
+  "RawDataSettings": {}
+}
